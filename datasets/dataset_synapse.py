@@ -46,30 +46,30 @@ class RandomGenerator(object):
         return sample
 
 
-class Synapse_dataset(Dataset):
-    def __init__(self, base_dir, list_dir, split, transform=None):
-        self.transform = transform  # using transform in torch!
-        self.split = split
-        self.sample_list = open(os.path.join(list_dir, self.split+'.txt')).readlines()
-        self.data_dir = base_dir
+# =======================
+# Dataset Definition
+# =======================
+class ISICDataset(Dataset):
+    def __init__(self, images_dir, masks_dir, transform=None):
+        self.images_dir = images_dir
+        self.masks_dir = masks_dir
+        self.transform = transform
+        self.image_files = sorted(os.listdir(images_dir))  # Ensure images are sorted
+        self.mask_files = sorted(os.listdir(masks_dir))      # Ensure masks are sorted
 
     def __len__(self):
-        return len(self.sample_list)
+        return len(self.image_files)
 
     def __getitem__(self, idx):
-        if self.split == "train":
-            slice_name = self.sample_list[idx].strip('\n')
-            data_path = os.path.join(self.data_dir, slice_name+'.npz')
-            data = np.load(data_path)
-            image, label = data['image'], data['label']
-        else:
-            vol_name = self.sample_list[idx].strip('\n')
-            filepath = self.data_dir + "/{}.npy.h5".format(vol_name)
-            data = h5py.File(filepath)
-            image, label = data['image'][:], data['label'][:]
+        image_path = os.path.join(self.images_dir, self.image_files[idx])
+        mask_path = os.path.join(self.masks_dir, self.mask_files[idx])
 
-        sample = {'image': image, 'label': label}
+        image = Image.open(image_path).convert("RGB")
+        mask = Image.open(mask_path).convert("L")  # Grayscale mask
+
         if self.transform:
-            sample = self.transform(sample)
-        sample['case_name'] = self.sample_list[idx].strip('\n')
-        return sample
+            image = self.transform(image)
+            mask = self.transform(mask)
+
+        return image, mask
+
