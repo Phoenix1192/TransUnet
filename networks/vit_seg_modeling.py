@@ -448,6 +448,7 @@ CONFIGS = {
     'R50-ViT-B_16': configs.get_r50_b16_config(),
     'R50-ViT-L_16': configs.get_r50_l16_config(),
     'testing': configs.get_testing(),
+    "facebook/ijepa_vith14_1k": configs.get_ijepa_h14_config(), 
 }
 
 
