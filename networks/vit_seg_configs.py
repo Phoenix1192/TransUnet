@@ -160,5 +160,10 @@ def get_ijepa_h14_config():
     config.decoder_channels = (256, 128, 64, 16)
     config.n_classes = 2
     config.activation = 'softmax'
+    
+    # 🚀 **Add this missing attribute**
+    config.skip_channels = [512, 256, 64, 16]  # Make sure this matches your model's expected input  
+    config.n_skip = 3  # If required, match with other configs
 
     return config
+
