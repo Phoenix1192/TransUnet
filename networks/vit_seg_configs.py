@@ -128,3 +128,37 @@ def get_h14_config():
     config.representation_size = None
 
     return config
+
+def get_ijepa_h14_config():
+    """Returns the IJEPA ViT-H/14 configuration."""
+    config = ml_collections.ConfigDict()
+    
+    # Patch size of 14x14
+    config.patches = ml_collections.ConfigDict({'size': (14, 14)})
+    
+    # ViT-Huge hidden size
+    config.hidden_size = 1280
+    
+    # Transformer settings
+    config.transformer = ml_collections.ConfigDict()
+    config.transformer.mlp_dim = 5120
+    config.transformer.num_heads = 16
+    config.transformer.num_layers = 32
+    config.transformer.attention_dropout_rate = 0.0
+    config.transformer.dropout_rate = 0.1
+    
+    # Classification setting
+    config.classifier = 'seg'  # Assuming segmentation task
+    
+    # No representation layer
+    config.representation_size = None
+    
+    # Pretrained weights path (update if needed)
+    config.pretrained_path = '../model/ijepa_checkpoint/imagenet1k/IJEPA-H_14.pth'
+    
+    # Decoder settings (for segmentation tasks)
+    config.decoder_channels = (256, 128, 64, 16)
+    config.n_classes = 2
+    config.activation = 'softmax'
+
+    return config
